@@ -57,5 +57,15 @@ const vansData = [
     hostId:"123",
     visibility: 'Public' 
   }
+   { 
+    id: "7", 
+    name: "Soft Life Wonder", 
+    price: 140, 
+    description: "With this van, you can take your travel life to the next level. The Soft Life Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.", 
+    imageUrl: "https://images.unsplash.com/photo-1695218212443-d4aed85a1377?q=80&w=1025&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+    type: "Rugged",
+    hostId:"456",
+    visibility: 'Public' 
+  }
 ]
 export default vansData
