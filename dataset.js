@@ -56,7 +56,7 @@ const vansData = [
     type: "Rugged",
     hostId:"123",
     visibility: 'Public' 
-  }
+  },
    { 
     id: "7", 
     name: "Soft Life Wonder", 
