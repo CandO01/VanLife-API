@@ -1,0 +1,12 @@
+{
+  "name": "vanlife-api-built-using-nodejs",
+  "version": "1.0.0",
+  "description": "a dataset used for fetching vans of different types of different prices",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Matthew Olawale",
+  "license": "ISC"
+}
