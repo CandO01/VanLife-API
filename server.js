@@ -1,66 +1,122 @@
 import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
 import getVanData from './getDataFromDataSet.js';
 
 const PORT = 8254;
+const usersPath = path.resolve('./users.json'); // File with user credentials
 
 const server = http.createServer(async (req, res) => {
-  // Enable CORS
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
 
   const vanLife = await getVanData();
 
-  // Route: GET /api/vans
+  // ========== GET Routes ==========
+  // GET /api/vans
   if (req.url === '/api/vans' && req.method === 'GET') {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(vanLife));
   }
 
-  //Route: GET /api/host/vans
-  else if(req.url ==='/api/host/vans' && req.method==='GET'){
-        const hostVans = vanLife.filter(van=>van.hostId)
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(hostVans))
-  }
-
-  // Route: GET /api/vans/:id
+  // GET /api/vans/:id
   else if (req.url.startsWith('/api/vans/') && req.method === 'GET') {
     const vanId = req.url.split('/').pop();
-    const filteredData = vanLife.filter(van => van.id === vanId);
+    const found = vanLife.find(van => van.id === vanId);
 
-    if (filteredData) {
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(filteredData)); // Send only the matched van
+    if (found) {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify(found));
     } else {
-      res.statusCode = 404;
+      res.statusCode = 404
+      res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify({ error: 'Van not found' }));
     }
   }
-  //Route: GET /api/host/vans/:id
-  else if(req.url.startsWith('/api/host/vans') && req.method==='GET'){
-      const hostVanId = req.url.split('').pop()
-      const hostVans = vanLife.filter(van=>van.id === hostVanId && van.hostId)
-      if(hostVans){
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(hostVans))
-      }
-      else {
-      res.statusCode = 404;
-      res.end(JSON.stringify({ error: 'VanId not found' }));
+
+  // GET /api/host/vans
+  else if (req.url === '/api/host/vans' && req.method === 'GET') {
+    const hostVans = vanLife.filter(van => van.hostId);
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(hostVans));
+  }
+
+  // GET /api/host/vans/:id
+  else if (req.url.startsWith('/api/host/vans/') && req.method === 'GET') {
+    const hostVanId = req.url.split('/').pop();
+    const hostVan = vanLife.find(van => van.id === hostVanId && van.hostId);
+
+    if (hostVan) {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify(hostVan));
+    } else {
+      res.statusCode = 404
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ error: 'Host van not found' }));
     }
   }
 
-  // If route not matched
+  // ========== POST Route: /login ==========
+  else if (req.method === 'POST' && req.url === '/login') {
+    let body = '';
+
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      try {
+        const { email, password } = JSON.parse(body);
+
+        if (!email || !password) {
+          throw new Error('Email and password are required');
+        }
+
+        fs.readFile(usersPath, 'utf8', (err, data) => {
+          if (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Server error reading users' }));
+            return;
+          }
+
+          const users = JSON.parse(data);
+          const user = users.find(u => u.email === email && u.password === password);
+
+          if (user) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Login successful', redirect: '/host' }));
+          } else {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid email or password' }));
+          }
+        });
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+  }
+
+  // ========== Catch-All ==========
   else {
-    res.statusCode = 404;
+    res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Route not found' }));
   }
 });
 
 server.listen(PORT, () => {
-  console.log(`This is from server: ${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
+
