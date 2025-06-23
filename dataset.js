@@ -66,6 +66,17 @@ const vansData = [
     type: "Rugged",
     hostId:"456",
     visibility: 'Public' 
-  }
+  },
+ {
+  id: "8",
+  name: "Nomad Dreamliner",
+  price: 160,
+  description: "With the Nomad Dreamliner, your travel life enters a new dimension. This sleek, eco-conscious van is built for modern explorers who crave style, comfort, and the freedom to go anywhere without compromise.",
+  imageUrl: "https://img.freepik.com/premium-photo/futuristic-truck-equipped-with-solar-panels-roof-showcasing-innovative-renewable-energy-solutions_1057402-10278.jpg?ga=GA1.1.68583390.1743549863&semt=ais_items_boosted&w=740",
+  type: "Rugged",
+  hostId: "456",
+  visibility: "Public"
+}
+
 ]
 export default vansData
