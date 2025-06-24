@@ -96,7 +96,7 @@ const server = http.createServer(async (req, res) => {
 
           if (user) {
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Login successful', redirect: 'host' }));
+            res.end(JSON.stringify({ message: 'Login successful', redirect: '/host' }));
           } else {
             res.writeHead(401, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Invalid email or password' }));
