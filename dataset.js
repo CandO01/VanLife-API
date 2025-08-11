@@ -76,6 +76,16 @@ const vansData = [
   type: "Rugged",
   hostId: "456",
   visibility: "Public"
+},
+ {
+  id: "9",
+  name: "Cruiser Deluxe",
+  price: 280,
+  description: "With the Cruiser Deluxe, this sleek, eco-conscious van is built for modern explorers who crave style, comfort, and the freedom to go anywhere without compromise.",
+  imageUrl: "https://fstoys.com/cdn/shop/files/2684-1shopify_900x_1e6e5994-f6d6-45af-a6f5-e70c92836e9a.webp?v=1744643232",
+  type: "Luxury",
+  hostId: "789",
+  visibility: "Public"
 }
 
 ]

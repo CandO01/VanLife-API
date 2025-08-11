@@ -202,13 +202,18 @@ else if (req.url.startsWith('/api/flutterwave/verify/') && req.method === 'GET')
           await usersCollection.insertOne({ name, phone, email, password: passwordHashed });
 
           res.writeHead(200, {'Content-Type':'application/json'});
-          res.end(JSON.stringify({ message: 'Thank you for signing up successfully!!!' }));
+          res.end(JSON.stringify({ 
+            message: 'Thank you for signing up successfully!!!',
+            user: name,
+            email: email,
+            phone: phone 
+          }));
 
         } catch (error) {
           res.writeHead(500, {'Content-Type':'application/json'});
-          res.end(JSON.stringify({ error: err.message }));
+          res.end(JSON.stringify({ error: error.message }));
         }
-      })
+      });
    }
 
   //  =======POST: Route Login ======//
@@ -237,7 +242,10 @@ else if (req.url.startsWith('/api/flutterwave/verify/') && req.method === 'GET')
           }
 
           res.writeHead(200, {'Content-Type':'application/json'});
-          res.end(JSON.stringify({ message: 'Login successfully!!!' }));
+          res.end(JSON.stringify({ 
+            message: 'Login successfully!!!',
+            user: user.name
+          }));
         } catch (error) {
           res.writeHead(500, {'Content-Type':'application/json'});
           res.end(JSON.stringify({ error: err.message }));
